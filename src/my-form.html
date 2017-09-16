@@ -12,6 +12,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/iron-form/iron-form.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="shared-styles.html">
 
 
@@ -25,16 +26,30 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
 
-    <div class="card">
+    <iron-ajax
+    id="registerLoginAjax"
+    method="post"
+    content-type="application/json"
+    handle-as="text"
+    on-response="handleData"
+    on-error="handleUserError"></iron-ajax>
+
+    <div class="card" id="test">
       <div class="circle">X</div>
       <h1>Bibliotech Test</h1>
       <p>Enter your details</p>
-      <iron-form>
+      <iron-form id="bibliotech-form">
         <form>
-          <paper-input name="email" label="Email" type="email" required auto-validate></paper-input>
-          <paper-input name="password" label="Password" type="password" minlength="8" required auto-validate></paper-input>
-          <paper-input name="password" label="Confirm Password" type="password" minlength="8" required auto-validate></paper-input>
-          <paper-button>Submit</paper-button>
+          <iron-input bind-value={{formData.email}}>
+            <paper-input name="email" label="Email" type="email"  required auto-validate></paper-input>
+          </iron-input>
+          <iron-input bind-value={{formData.password}}>
+            <paper-input name="password" label="Password" type="password" minlength="8"  required auto-validate></paper-input>
+          </iron-input>
+          <iron-input bind-value={{formData.passwordConf}}>
+            <paper-input name="password" label="Confirm Password" type="password" minlength="8"  required auto-validate></paper-input>
+          </iron-input>
+          <paper-button raised on-tap="handleData">Submit</paper-button>
         </form>
       </iron-form>
     </div>
@@ -43,7 +58,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <script>
     class MyForm extends Polymer.Element {
       static get is() { return 'my-form'; }
+
+      static get properties() {
+        return {
+          formData: {
+            type: Object,
+            value: {},
+            notify: true
+          }
+        }
+      }
+      constructor(){
+        super();
+        this.addEventListener('submit', (e) => this.handleData());
+      }
+      handleData(){
+        console.log(this.formData)
+      }
     }
+
+
+    }
+
 
     window.customElements.define(MyForm.is, MyForm);
   </script>
